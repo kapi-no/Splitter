@@ -19,6 +19,18 @@ contract Splitter {
         carol = _carol;
     }
 
+    function getAliceAccount() public view returns (address aliceAddress) {
+        return alice;
+    }
+
+    function getBobAccount() public view returns (address bobAddress) {
+        return bob;
+    }
+
+    function getCarolAccount() public view returns (address carolAddress) {
+        return carol;
+    }
+
     function split() public payable onlyAlice returns (bool success) {
         uint halvedValue = (msg.value >> 1);
 
