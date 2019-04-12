@@ -21,10 +21,14 @@ function getBalance(account) {
     });
 }
 
+function refreshBalance(account) {
+    updateStaticElement(account.address.key, account.address.val);
+    getBalance(account);
+}
+
 function refreshAllBalances(accounts) {
     for (const acc of accounts) {
-        updateStaticElement(acc.address.key, acc.address.val);
-        getBalance(acc);
+        refreshBalance(acc);
     }
 }
 
@@ -70,20 +74,42 @@ let alice = {address: {key: "aliceAddress", val: "0x"}, balance: {key: "aliceBal
 let bob = {address: {key: "bobAddress", val: "0x"}, balance: {key: "bobBalance", val: 0}};
 let carol = {address: {key: "carolAddress", val: "0x"}, balance: {key: "carolBalance", val: 0}};
 
-const splitterAddress = "0x456F2E188915D43E57a71D068c5EDa0ca9893f2B";
+const splitterAddress = "0x251c130DCff47614CC08dED1282434b5E03BEc37";
 const splitterInstance = web3.eth.contract(JSON.parse(splitterABI)).at(splitterAddress);
 let splitter = {address: {key: "splitterAddress", val: splitterAddress}, 
                 balance: {key: "splitterBalance", val: 0}};
 
 
-web3.eth.getAccounts(function(err, accounts) {
+splitterInstance.getAliceAccount(function (err, aliceAccount){
     if (!err) {
-        alice.address.val = accounts[0];
-        bob.address.val = accounts[1];
-        carol.address.val = accounts[2];
+        alice.address.val = aliceAccount;
 
-        refreshAllBalances([alice, bob, carol, splitter]);
+        refreshBalance(alice);
     } else {
-        console.log(err)
+        console.log(err);
     }
 });
+
+splitterInstance.getBobAccount(function (err, bobAccount){
+    if (!err) {
+        bob.address.val = bobAccount;
+
+        refreshBalance(bob);
+    } else {
+        console.log(err);
+    }
+});
+
+splitterInstance.getCarolAccount(function (err, carolAccount){
+    if (!err) {
+        carol.address.val = carolAccount;
+
+        refreshBalance(carol);
+    } else {
+        console.log(err);
+    }
+});
+
+window.onload = function() {
+    refreshBalance(splitter);
+}
