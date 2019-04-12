@@ -1,0 +1,21 @@
+<html>
+<head>
+    <title>Splitter</title>
+    <script src="./web3.js"></script>
+    <script src="./splitterCompiled.js"></script>
+    <script src="./splitter.js"></script>
+</head>
+<body>
+    <p>Alice (<span id="aliceAddress"></span>) balance: <span id="aliceBalance"></span> wei</p>
+    <p>Bob (<span id="bobAddress"></span>) balance: <span id="bobBalance"></span> wei</p>
+    <p>Carol (<span id="carolAddress"></span>) balance: <span id="carolBalance"></span> wei</p>
+    </br>
+    <p>Splitter Contract (<span id="splitterAddress"></span>)
+        balance: <span id="splitterBalance"></span> wei</p>
+    <p>
+        Transaction value: <input type="text" id="splitValue"> wei
+        <button onclick="split()">Split</button>
+    </p>
+    <button onclick="refresh()">Refresh Balances</button>
+</body>
+</html>
