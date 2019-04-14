@@ -55,7 +55,31 @@ function split() {
     }
 
     splitterInstance.split(
-        {from: alice.address.val, value: splitValue, gas: 60000, gasPrice:2},
+        {from: alice.address.val, value: splitValue, gas: 100000, gasPrice:2},
+        function (err, txObj){
+            if (!err) {
+                console.log("Transcation hash: " + txObj);
+            } else {
+                console.log(err);
+            }
+        });
+}
+
+function pullBobFunds() {
+    splitterInstance.pull(
+        {from: bob.address.val, value: 0, gas: 100000, gasPrice:2},
+        function (err, txObj){
+            if (!err) {
+                console.log("Transcation hash: " + txObj);
+            } else {
+                console.log(err);
+            }
+        });
+}
+
+function pullCarolFunds() {
+    splitterInstance.pull(
+        {from: carol.address.val, value: 0, gas: 100000, gasPrice:2},
         function (err, txObj){
             if (!err) {
                 console.log("Transcation hash: " + txObj);
@@ -74,13 +98,13 @@ let alice = {address: {key: "aliceAddress", val: "0x"}, balance: {key: "aliceBal
 let bob = {address: {key: "bobAddress", val: "0x"}, balance: {key: "bobBalance", val: 0}};
 let carol = {address: {key: "carolAddress", val: "0x"}, balance: {key: "carolBalance", val: 0}};
 
-const splitterAddress = "0x251c130DCff47614CC08dED1282434b5E03BEc37";
+const splitterAddress = "0x3e91b633b3937664fca22Cc38d10E4B17aA82B4E";
 const splitterInstance = web3.eth.contract(JSON.parse(splitterABI)).at(splitterAddress);
 let splitter = {address: {key: "splitterAddress", val: splitterAddress}, 
                 balance: {key: "splitterBalance", val: 0}};
 
 
-splitterInstance.getAliceAccount(function (err, aliceAccount){
+splitterInstance.alice.call(function (err, aliceAccount) {
     if (!err) {
         alice.address.val = aliceAccount;
 
@@ -90,9 +114,9 @@ splitterInstance.getAliceAccount(function (err, aliceAccount){
     }
 });
 
-splitterInstance.getBobAccount(function (err, bobAccount){
+splitterInstance.bob.call(function (err, bobAccount) {
     if (!err) {
-        bob.address.val = bobAccount;
+        bob.address.val = bobAccount[0];
 
         refreshBalance(bob);
     } else {
@@ -100,9 +124,9 @@ splitterInstance.getBobAccount(function (err, bobAccount){
     }
 });
 
-splitterInstance.getCarolAccount(function (err, carolAccount){
+splitterInstance.carol.call(function (err, carolAccount) {
     if (!err) {
-        carol.address.val = carolAccount;
+        carol.address.val = carolAccount[0];
 
         refreshBalance(carol);
     } else {
