@@ -1,3 +1,5 @@
+const truffleAssert = require('truffle-assertions');
+
 const Splitter = artifacts.require("Splitter");
 
 contract('Splitter', (accounts) => {
@@ -25,55 +27,14 @@ contract('Splitter', (accounts) => {
         });
 
         it('should not create a contract', async () => {
-            let errorFlag = -1;
-
             const inputAddress = "0x0000000000000000000000000000000000000001";
             const invalidAddress = "0x0000000000000000000000000000000000000000";
 
-            try {
-                await Splitter.new(inputAddress, invalidAddress);
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1, "Zero address should not be accepted");
-
-            try {
-                await Splitter.new(accounts[0], accounts[0]);
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1, "Alice is not Bob or Carol");
-
-            try {
-                await Splitter.new(inputAddress, accounts[0]);
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1, "Alice is not Carol");
-
-            try {
-                await Splitter.new(accounts[0], inputAddress);
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1, "Alice is not Bob");
-
-            try {
-                await Splitter.new(inputAddress, inputAddress);
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1, "Bob and Carol cannot share the same address");
+            await truffleAssert.fails(Splitter.new(inputAddress, invalidAddress));
+            await truffleAssert.fails(Splitter.new(accounts[0], accounts[0]));
+            await truffleAssert.fails(Splitter.new(inputAddress, accounts[0]));
+            await truffleAssert.fails(Splitter.new(accounts[0], inputAddress));
+            await truffleAssert.fails(Splitter.new(inputAddress, inputAddress));
         });
     });
 
@@ -92,16 +53,7 @@ contract('Splitter', (accounts) => {
         });
 
         it('should throw an error when splitting zero value', async () => {
-            let errorFlag = -1;
-
-            try {
-                await splitterInstance.split({from: accounts[0], gas: 100000, gasPrice: 2});
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1);
+            await truffleAssert.fails(splitterInstance.split({from: accounts[0], gas: 100000}));
         });
 
         it('should split correctly the whole transaction value', async () => {
@@ -163,43 +115,17 @@ contract('Splitter', (accounts) => {
         });
 
         it('should not allow to pull from non-Bob, non-Alice accounts', async () => {
-            let errorFlag = -1;
             const nonBobAliceAddress = "0x0000000000000000000000000000000000000001";
 
-            try {
-                await splitterInstance.pull({from: nonBobAliceAddress});
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1);
+            await truffleAssert.fails(splitterInstance.pull({from: nonBobAliceAddress, gas: 100000}));
         });
 
         it('should not allow Bob to pull with 0 balance', async () => {
-            let errorFlag = -1;
-
-            try {
-                await splitterInstance.pull({from: acconts[1]});
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1);
+            await truffleAssert.fails(splitterInstance.pull({from: bobAddress, gas: 100000}));
         });
 
         it('should not allow Carol to pull with 0 balance', async () => {
-            let errorFlag = -1;
-
-            try {
-                await splitterInstance.pull({from: acconts[2]});
-                errorFlag = 0;
-            } catch (err) {
-                errorFlag = 1;
-            }
-
-            assert(errorFlag == 1);
+            await truffleAssert.fails(splitterInstance.pull({from: aliceAddress, gas: 100000}));
         })
 
         it('should clear Bob & Carol balances after pull', async () => {
