@@ -1,7 +1,8 @@
 pragma solidity 0.5.0;
 
 contract Splitter {
-    event LogSplit(address indexed _alice, address indexed _bob, address indexed _carol, uint _value);
+    event LogSplit(address indexed _alice, address indexed _bob, address indexed _carol,
+                   uint _bobValue, uint _carolValue);
     event LogPull(address indexed _to, uint _value);
 
     struct Receiver {
@@ -34,23 +35,25 @@ contract Splitter {
     function split() public payable onlyAlice returns (bool success) {
         require(msg.value > 0);
 
-        uint halvedValue = (msg.value >> 1);
+        uint bobValue = (msg.value >> 1);
+        uint carolValue = bobValue;
 
-        require(bob.balance + halvedValue > bob.balance);
-        require(carol.balance + halvedValue > carol.balance);
+        if ((msg.value % 2) == 1) {
+            bobValue += 1;
+        }
 
-        bob.balance += halvedValue;
-        carol.balance += halvedValue;
+        require(bob.balance + bobValue > bob.balance);
+        require(carol.balance + carolValue > carol.balance);
 
-        emit LogSplit(alice, bob.addr, carol.addr, halvedValue);
+        bob.balance += bobValue;
+        carol.balance += carolValue;
+
+        emit LogSplit(alice, bob.addr, carol.addr, bobValue, carolValue);
 
         return true;
     }
 
-    function pull() public payable returns (bool success) {
-        require(((msg.sender == bob.addr) ||
-                 (msg.sender == carol.addr)));
-
+    function pull() public returns (bool success) {
         if (msg.sender == bob.addr) {
             require(bob.balance > 0);
             require(address(this).balance >= bob.balance);
@@ -58,23 +61,23 @@ contract Splitter {
             address payable bobAddr = bob.addr;
             uint bobBalance = bob.balance;
 
-            bobAddr.transfer(bobBalance);
+            emit LogPull(bobAddr, bobBalance);
+
             bob.balance = 0;
-
-            emit LogPull(bob.addr, bobBalance);
-        }
-
-        if (msg.sender == carol.addr) {
+            bobAddr.transfer(bobBalance);
+        } else if (msg.sender == carol.addr) {
             require(carol.balance > 0);
-            require(address(this).balance >= carol.balance);
+            assert(address(this).balance >= carol.balance);
 
             address payable carolAddr = carol.addr;
             uint carolBalance = carol.balance;
 
-            carolAddr.transfer(carol.balance);
-            carol.balance = 0;
+            emit LogPull(carolAddr, carolBalance);
 
-            emit LogPull(carol.addr, carolBalance);
+            carol.balance = 0;
+            carolAddr.transfer(carolBalance);
+        } else {
+            revert();
         }
 
         return true;
