@@ -89,13 +89,18 @@ const splitterABI = `
       },
       {
         "indexed": false,
-        "name": "_value",
+        "name": "_bobValue",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "_carolValue",
         "type": "uint256"
       }
     ],
     "name": "LogSplit",
     "type": "event",
-    "signature": "0x5861cc23de8cab7630160dc0ee2c1e9aa2a0f1498f73c387807c0100e6684da7"
+    "signature": "0xdf977ab3eb0f0f54e3e1537715c34722a263893bebe7df51f229a8829f9c1521"
   },
   {
     "anonymous": false,
@@ -140,8 +145,8 @@ const splitterABI = `
         "type": "bool"
       }
     ],
-    "payable": true,
-    "stateMutability": "payable",
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function",
     "signature": "0x329eb839"
   }

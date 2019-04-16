@@ -33,8 +33,8 @@ function refreshAllBalances(accounts) {
 }
 
 function isInt(value) {
-    return !isNaN(value) && 
-           parseInt(Number(value)) == value && 
+    return !isNaN(value) &&
+           parseInt(Number(value)) == value &&
            !isNaN(parseInt(value, 10));
 }
 
@@ -98,9 +98,9 @@ let alice = {address: {key: "aliceAddress", val: "0x"}, balance: {key: "aliceBal
 let bob = {address: {key: "bobAddress", val: "0x"}, balance: {key: "bobBalance", val: 0}};
 let carol = {address: {key: "carolAddress", val: "0x"}, balance: {key: "carolBalance", val: 0}};
 
-const splitterAddress = "0x3e91b633b3937664fca22Cc38d10E4B17aA82B4E";
+const splitterAddress = "0x059dD275716182DCdF1E108cd553D598B0820690";
 const splitterInstance = web3.eth.contract(JSON.parse(splitterABI)).at(splitterAddress);
-let splitter = {address: {key: "splitterAddress", val: splitterAddress}, 
+let splitter = {address: {key: "splitterAddress", val: splitterAddress},
                 balance: {key: "splitterBalance", val: 0}};
 
 
