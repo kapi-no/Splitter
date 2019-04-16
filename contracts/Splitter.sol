@@ -1,5 +1,7 @@
 pragma solidity 0.5.0;
 
+import "./SafeMath.sol";
+
 contract Splitter {
     event LogSplit(address indexed _alice, address indexed _bob, address indexed _carol,
                    uint _bobValue, uint _carolValue);
@@ -42,11 +44,8 @@ contract Splitter {
             bobValue += 1;
         }
 
-        require(bob.balance + bobValue > bob.balance);
-        require(carol.balance + carolValue > carol.balance);
-
-        bob.balance += bobValue;
-        carol.balance += carolValue;
+        bob.balance = SafeMath.add(bob.balance, bobValue);
+        carol.balance = SafeMath.add(carol.balance, carolValue);
 
         emit LogSplit(alice, bob.addr, carol.addr, bobValue, carolValue);
 
