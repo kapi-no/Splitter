@@ -17,13 +17,13 @@ contract('Splitter', (accounts) => {
             const bob = await splitterInstance.bob.call();
             const carol = await splitterInstance.carol.call();
 
-            assert.equal(alice, aliceAddress, "Alice address was not stored correctly");
+            assert.strictEqual(alice, aliceAddress, "Alice address was not stored correctly");
 
-            assert.equal(bob[0], bobAddress, "Bob address was not stored correctly");
-            assert.equal(bob[1], 0, "Bob balance was not initialized correctly");
+            assert.strictEqual(bob[0], bobAddress, "Bob address was not stored correctly");
+            assert.strictEqual(bob[1].toString(), "0", "Bob balance was not initialized correctly");
 
-            assert.equal(carol[0], carolAddress, "Carol address was not stored correctly");
-            assert.equal(carol[1], 0, "Carol balance was not initialized correctly");
+            assert.strictEqual(carol[0], carolAddress, "Carol address was not stored correctly");
+            assert.strictEqual(carol[1].toString(), "0", "Carol balance was not initialized correctly");
         });
 
         it('should not create a contract', async () => {
@@ -65,9 +65,10 @@ contract('Splitter', (accounts) => {
             const carol = await splitterInstance.carol.call();
             const contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, transactionValue, "Contract balance is not correct");
-            assert.equal(bob[1], 5, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 5, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), transactionValue.toString(),
+                               "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "5", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "5", "Carol balance was not calculated correctly");
         });
 
         it('should split correctly and leave one wei unsplitted', async () => {
@@ -79,9 +80,10 @@ contract('Splitter', (accounts) => {
             const carol = await splitterInstance.carol.call();
             const contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, transactionValue, "Contract balance is not correct");
-            assert.equal(bob[1], 5, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 5, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), transactionValue.toString(),
+                               "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "5", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "5", "Carol balance was not calculated correctly");
         });
 
         it('should split multiple times correctly', async () => {
@@ -109,9 +111,12 @@ contract('Splitter', (accounts) => {
             const carol = await splitterInstance.carol.call();
             const contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, expectedContractBalance, "Contract balance is not correct");
-            assert.equal(bob[1], expectedBobBalance, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], expectedCarolBalance, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), expectedContractBalance.toString(),
+                               "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), expectedBobBalance.toString(),
+                               "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), expectedCarolBalance.toString(),
+                               "Carol balance was not calculated correctly");
         });
 
         it('should not allow to pull from non-Bob, non-Alice accounts', async () => {
@@ -137,9 +142,9 @@ contract('Splitter', (accounts) => {
             const carol = await splitterInstance.carol.call();
             const contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, 0, "Contract balance is not correct");
-            assert.equal(bob[1], 0, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 0, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), "0", "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "0", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "0", "Carol balance was not calculated correctly");
         })
 
         it('should clear Bob & Carol balances after pull and leave 1 wei in contract', async () => {
@@ -151,9 +156,9 @@ contract('Splitter', (accounts) => {
             const carol = await splitterInstance.carol.call();
             const contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, 1, "Contract balance is not correct");
-            assert.equal(bob[1], 0, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 0, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), "1", "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "0", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "0", "Carol balance was not calculated correctly");
         })
 
         it('should clear Bob & Carol balances after series of splits and pulls', async () => {
@@ -164,9 +169,9 @@ contract('Splitter', (accounts) => {
             let carol = await splitterInstance.carol.call();
             let contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, 5, "Contract balance is not correct");
-            assert.equal(bob[1], 0, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 5, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), "5", "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "0", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "5", "Carol balance was not calculated correctly");
 
             await splitterInstance.split({from: accounts[0], value: 10});
 
@@ -174,9 +179,9 @@ contract('Splitter', (accounts) => {
             carol = await splitterInstance.carol.call();
             contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, 15, "Contract balance is not correct");
-            assert.equal(bob[1], 5, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 10, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), "15", "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "5", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "10", "Carol balance was not calculated correctly");
 
             await splitterInstance.pull({from: aliceAddress});
 
@@ -184,9 +189,9 @@ contract('Splitter', (accounts) => {
             carol = await splitterInstance.carol.call();
             contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, 5, "Contract balance is not correct");
-            assert.equal(bob[1], 5, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 0, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), "5", "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "5", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "0", "Carol balance was not calculated correctly");
 
             await splitterInstance.pull({from: bobAddress});
 
@@ -194,9 +199,9 @@ contract('Splitter', (accounts) => {
             carol = await splitterInstance.carol.call();
             contractBalance = await web3.eth.getBalance(splitterInstance.address);
 
-            assert.equal(contractBalance, 0, "Contract balance is not correct");
-            assert.equal(bob[1], 0, "Bob balance was not calculated correctly");
-            assert.equal(carol[1], 0, "Carol balance was not calculated correctly");
+            assert.strictEqual(contractBalance.toString(), "0", "Contract balance is not correct");
+            assert.strictEqual(bob[1].toString(), "0", "Bob balance was not calculated correctly");
+            assert.strictEqual(carol[1].toString(), "0", "Carol balance was not calculated correctly");
         })
 
     });
