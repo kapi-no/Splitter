@@ -52,6 +52,11 @@ contract('Splitter', (accounts) => {
             splitterInstance = await Splitter.new(bobAddress, aliceAddress);
         });
 
+        it('should fail when triggering fallback function', async () => {
+            await truffleAssert.fails(web3.eth.sendTransaction(
+                {from: accounts[0], to: splitterInstance.address, gas: 100000, value: 1000}));
+        });
+
         it('should throw an error when splitting zero value', async () => {
             await truffleAssert.fails(splitterInstance.split({from: accounts[0], gas: 100000}));
         });
