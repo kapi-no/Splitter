@@ -9,14 +9,11 @@ contract Splitter {
                    uint _bobValue, uint _carolValue);
     event LogPull(address indexed _to, uint _value);
 
-    struct Receiver {
-        address payable addr;
-        uint balance;
-    }
-
     address public alice;
-    Receiver public bob;
-    Receiver public carol;
+    address public bob;
+    address public carol;
+
+    mapping(address => uint) public balances;
 
     modifier onlyAlice {
         require(msg.sender == alice);
@@ -32,8 +29,8 @@ contract Splitter {
 
         alice = msg.sender;
 
-        bob.addr = _bob;
-        carol.addr = _carol;
+        bob = _bob;
+        carol = _carol;
     }
 
     function split() public payable onlyAlice returns (bool success) {
@@ -46,40 +43,24 @@ contract Splitter {
             bobValue += 1;
         }
 
-        bob.balance = bob.balance.add(bobValue);
-        carol.balance = carol.balance.add(carolValue);
+        balances[bob] = balances[bob].add(bobValue);
+        balances[carol] = balances[carol].add(carolValue);
 
-        emit LogSplit(alice, bob.addr, carol.addr, bobValue, carolValue);
+        emit LogSplit(alice, bob, carol, bobValue, carolValue);
 
         return true;
     }
 
     function pull() public returns (bool success) {
-        if (msg.sender == bob.addr) {
-            require(bob.balance > 0);
-            require(address(this).balance >= bob.balance);
+        uint balance = balances[msg.sender];
 
-            address payable bobAddr = bob.addr;
-            uint bobBalance = bob.balance;
+        require(balance > 0);
+        assert(address(this).balance >= balance);
 
-            emit LogPull(bobAddr, bobBalance);
+        emit LogPull(msg.sender, balance);
 
-            bob.balance = 0;
-            bobAddr.transfer(bobBalance);
-        } else if (msg.sender == carol.addr) {
-            require(carol.balance > 0);
-            assert(address(this).balance >= carol.balance);
-
-            address payable carolAddr = carol.addr;
-            uint carolBalance = carol.balance;
-
-            emit LogPull(carolAddr, carolBalance);
-
-            carol.balance = 0;
-            carolAddr.transfer(carolBalance);
-        } else {
-            revert();
-        }
+        balances[msg.sender] = 0;
+        msg.sender.transfer(balance);
 
         return true;
     }
