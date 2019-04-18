@@ -1,9 +1,3 @@
-if (typeof web3 !== 'undefined') {
-    web3 = new Web3(web3.currentProvider);
-} else {
-    web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
-}
-
 function updateStaticElement(name, value) {
     if (document.getElementById(name) !== null) {
         document.getElementById(name).innerHTML = value;
@@ -54,7 +48,7 @@ function split() {
         return;
     }
 
-    splitterInstance.split(
+    splitterInstance.split(bob.address.val, carol.address.val,
         {from: alice.address.val, value: splitValue, gas: 100000, gasPrice:2},
         function (err, txObj){
             if (!err) {
@@ -94,46 +88,37 @@ function refresh() {
 }
 
 
+if (typeof web3 !== 'undefined') {
+    web3 = new Web3(web3.currentProvider);
+} else {
+    web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:8545"));
+}
+
+
 let alice = {address: {key: "aliceAddress", val: "0x"}, balance: {key: "aliceBalance", val: 0}};
 let bob = {address: {key: "bobAddress", val: "0x"}, balance: {key: "bobBalance", val: 0}};
 let carol = {address: {key: "carolAddress", val: "0x"}, balance: {key: "carolBalance", val: 0}};
 
-const splitterAddress = "0x059dD275716182DCdF1E108cd553D598B0820690";
+const splitterAddress = "0x3D15D0E80F39f8b761ee4Dcc5Ebf73A7e834e953";
 const splitterInstance = web3.eth.contract(JSON.parse(splitterABI)).at(splitterAddress);
 let splitter = {address: {key: "splitterAddress", val: splitterAddress},
                 balance: {key: "splitterBalance", val: 0}};
 
 
-splitterInstance.alice.call(function (err, aliceAccount) {
-    if (!err) {
-        alice.address.val = aliceAccount;
-
-        refreshBalance(alice);
-    } else {
-        console.log(err);
-    }
-});
-
-splitterInstance.bob.call(function (err, bobAccount) {
-    if (!err) {
-        bob.address.val = bobAccount[0];
-
-        refreshBalance(bob);
-    } else {
-        console.log(err);
-    }
-});
-
-splitterInstance.carol.call(function (err, carolAccount) {
-    if (!err) {
-        carol.address.val = carolAccount[0];
-
-        refreshBalance(carol);
-    } else {
-        console.log(err);
-    }
-});
-
 window.onload = function() {
     refreshBalance(splitter);
+
+    web3.eth.getAccounts(function (err, accounts) {
+        if (!err) {
+            alice.address.val = accounts[0];
+            bob.address.val = accounts[1];
+            carol.address.val = accounts[2];
+
+            refreshBalance(alice);
+            refreshBalance(bob);
+            refreshBalance(carol);
+        } else {
+            console.log(err);
+        }
+    });
 }

@@ -2,72 +2,23 @@ const splitterABI = `
 [
   {
     "constant": true,
-    "inputs": [],
-    "name": "carol",
-    "outputs": [
-      {
-        "name": "addr",
-        "type": "address"
-      },
-      {
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function",
-    "signature": "0x8b930f15"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "bob",
-    "outputs": [
-      {
-        "name": "addr",
-        "type": "address"
-      },
-      {
-        "name": "balance",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function",
-    "signature": "0xc09cec77"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "alice",
-    "outputs": [
+    "inputs": [
       {
         "name": "",
         "type": "address"
       }
     ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function",
-    "signature": "0xfb47e3a2"
-  },
-  {
-    "inputs": [
+    "name": "balances",
+    "outputs": [
       {
-        "name": "_bob",
-        "type": "address"
-      },
-      {
-        "name": "_carol",
-        "type": "address"
+        "name": "",
+        "type": "uint256"
       }
     ],
     "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "constructor",
-    "signature": "constructor"
+    "stateMutability": "view",
+    "type": "function",
+    "signature": "0x27e235e3"
   },
   {
     "anonymous": false,
@@ -122,7 +73,16 @@ const splitterABI = `
   },
   {
     "constant": false,
-    "inputs": [],
+    "inputs": [
+      {
+        "name": "bob",
+        "type": "address"
+      },
+      {
+        "name": "carol",
+        "type": "address"
+      }
+    ],
     "name": "split",
     "outputs": [
       {
@@ -133,7 +93,7 @@ const splitterABI = `
     "payable": true,
     "stateMutability": "payable",
     "type": "function",
-    "signature": "0xf7654176"
+    "signature": "0x0f2c9329"
   },
   {
     "constant": false,
