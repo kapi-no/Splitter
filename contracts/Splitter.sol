@@ -9,35 +9,23 @@ contract Splitter {
                    uint _bobValue, uint _carolValue);
     event LogPull(address indexed _to, uint _value);
 
-    address public alice;
-    address public bob;
-    address public carol;
-
     mapping(address => uint) public balances;
 
-    modifier onlyAlice {
-        require(msg.sender == alice);
-        _;
-    }
+    function split(address bob, address carol) public payable returns (bool success) {
+        uint aliceValue = msg.value;
 
-    constructor(address payable _bob, address payable _carol) public {
-        require(_bob != address(0));
-        require(_carol != address(0));
-        require(msg.sender != _bob);
-        require(msg.sender != _carol);
-        require(_bob != _carol);
+        require(aliceValue > 0);
 
-        alice = msg.sender;
+        address alice = msg.sender;
 
-        bob = _bob;
-        carol = _carol;
-    }
+        require(bob != address(0));
+        require(carol != address(0));
+        require(alice != bob);
+        require(alice != carol);
+        require(bob != carol);
 
-    function split() public payable onlyAlice returns (bool success) {
-        require(msg.value > 0);
-
-        uint carolValue = (msg.value >> 1);
-        uint bobValue = carolValue + (msg.value & 0x01);
+        uint carolValue = (aliceValue >> 1);
+        uint bobValue = carolValue + (aliceValue & 0x01);
 
         balances[bob] = balances[bob].add(bobValue);
         balances[carol] = balances[carol].add(carolValue);
