@@ -36,12 +36,8 @@ contract Splitter {
     function split() public payable onlyAlice returns (bool success) {
         require(msg.value > 0);
 
-        uint bobValue = (msg.value >> 1);
-        uint carolValue = bobValue;
-
-        if ((msg.value % 2) == 1) {
-            bobValue += 1;
-        }
+        uint carolValue = (msg.value >> 1);
+        uint bobValue = carolValue + (msg.value & 0x01);
 
         balances[bob] = balances[bob].add(bobValue);
         balances[carol] = balances[carol].add(carolValue);
