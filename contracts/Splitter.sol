@@ -1,8 +1,9 @@
 pragma solidity 0.5.7;
 
 import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
+import '../node_modules/openzeppelin-solidity/contracts/lifecycle/Pausable.sol';
 
-contract Splitter {
+contract Splitter is Pausable {
     using SafeMath for uint;
 
     event LogSplit(address indexed _alice, address indexed _bob, address indexed _carol,
@@ -11,7 +12,7 @@ contract Splitter {
 
     mapping(address => uint) public balances;
 
-    function split(address bob, address carol) public payable returns (bool success) {
+    function split(address bob, address carol) public payable whenNotPaused returns (bool success) {
         require(msg.value > 0);
         require(bob != address(0));
         require(carol != address(0));
@@ -30,7 +31,7 @@ contract Splitter {
         return true;
     }
 
-    function pull() public returns (bool success) {
+    function pull() public whenNotPaused returns (bool success) {
         uint senderBalance = balances[msg.sender];
 
         require(senderBalance > 0);

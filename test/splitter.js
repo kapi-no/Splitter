@@ -18,6 +18,22 @@ contract('Splitter', (accounts) => {
         splitterInstance = await Splitter.new({from: accounts[0]});
     });
 
+    it('should fail the split call when contract is paused', async () => {
+        await splitterInstance.pause({from: accounts[0]});
+
+        await truffleAssert.fails(splitterInstance.split(bobAddress, carolAddress,
+            {from: accounts[0], value: 10}));
+    });
+
+    it('should fail the pull call when contract is paused', async () => {
+        await splitterInstance.split(bobAddress, carolAddress, {from: accounts[0], value: 10});
+        await splitterInstance.pull({from: bobAddress});
+
+        await splitterInstance.pause({from: accounts[0]});
+
+        await truffleAssert.fails(splitterInstance.pull({from: carolAddress}));
+    });
+
     it('should fail when triggering fallback function', async () => {
         await truffleAssert.fails(web3.eth.sendTransaction(
             {from: accounts[0], to: splitterInstance.address, gas: 100000, value: 1000}));
