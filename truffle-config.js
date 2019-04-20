@@ -1,4 +1,5 @@
 module.exports = {
+  build: "./node_modules/.bin/webpack-cli --mode development",
   compilers: {
     solc: {
       version: "0.5.7",
