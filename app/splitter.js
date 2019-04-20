@@ -99,7 +99,7 @@ let alice = {address: {key: "aliceAddress", val: "0x"}, balance: {key: "aliceBal
 let bob = {address: {key: "bobAddress", val: "0x"}, balance: {key: "bobBalance", val: 0}};
 let carol = {address: {key: "carolAddress", val: "0x"}, balance: {key: "carolBalance", val: 0}};
 
-const splitterAddress = "0x3D15D0E80F39f8b761ee4Dcc5Ebf73A7e834e953";
+const splitterAddress = "0xB2900A5f5cd5e7526a93FaFFBba7b0DE8E0FBDAc";
 const splitterInstance = web3.eth.contract(JSON.parse(splitterABI)).at(splitterAddress);
 let splitter = {address: {key: "splitterAddress", val: splitterAddress},
                 balance: {key: "splitterBalance", val: 0}};
