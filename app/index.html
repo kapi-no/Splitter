@@ -1,23 +1,30 @@
-<html>
+<!doctype html>
+<html lang="en" dir="ltr">
 <head>
-    <title>Splitter</title>
-    <script src="./web3.js"></script>
-    <script src="./splitterCompiled.js"></script>
-    <script src="./splitter.js"></script>
+<title>Splitter</title>
+<meta charset="utf-8">
+
 </head>
 <body>
-    <p>Alice (<span id="aliceAddress"></span>) balance: <span id="aliceBalance"></span> wei</p>
-    <p>Bob (<span id="bobAddress"></span>) balance: <span id="bobBalance"></span> wei</p>
-    <p>Carol (<span id="carolAddress"></span>) balance: <span id="carolBalance"></span> wei</p>
+
+    <div>Alice (<span id="aliceAddress">Loading...</span>) balance: <span id="aliceBalance">Loading...</span> wei</div>
+    <div>Bob (<span id="bobAddress">Loading...</span>) balance: <span id="bobBalance">Loading...</span> wei</div>
+    <div>Carol (<span id="carolAddress">Loading...</span>) balance: <span id="carolBalance">Loading...</span> wei</div>
     </br>
-    <p>Splitter Contract (<span id="splitterAddress"></span>)
-        balance: <span id="splitterBalance"></span> wei</p>
-    <p>
-        Transaction value: <input type="text" id="splitValue"> wei
-        <button onclick="split()">Split</button>
-    </p>
-    <button onclick="pullBobFunds()">Pull Bob Funds</button></br>
-    <button onclick="pullCarolFunds()">Pull Carol Funds</button></br>
-    <button onclick="refresh()">Refresh Balances</button></br>
+    <div>Splitter Contract (<span id="splitterAddress"></span>) balance: <span id="splitterBalance"></span> wei</div>
+
+    <div>
+        Transaction value: <input name="splitValue" type="number" placeholder="0"> wei
+        <button id="split">Split</button>
+    </div>
+
+    <div><button id="pullBob">Pull Bob Funds</button></div>
+    <div><button id="pullCarol">Pull Carol Funds</button></div>
+    <div><button id="refresh">Refresh Balances</button></div>
+
+    <div id="status"></div>
+
+<script src="js/app.js"></script>
+
 </body>
 </html>
