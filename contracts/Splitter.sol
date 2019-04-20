@@ -12,39 +12,34 @@ contract Splitter {
     mapping(address => uint) public balances;
 
     function split(address bob, address carol) public payable returns (bool success) {
-        uint aliceValue = msg.value;
-
-        require(aliceValue > 0);
-
-        address alice = msg.sender;
-
+        require(msg.value > 0);
         require(bob != address(0));
         require(carol != address(0));
-        require(alice != bob);
-        require(alice != carol);
+        require(msg.sender != bob);
+        require(msg.sender != carol);
         require(bob != carol);
 
-        uint carolValue = (aliceValue >> 1);
-        uint bobValue = carolValue + (aliceValue & 0x01);
+        uint carolValue = (msg.value >> 1);
+        uint bobValue = carolValue + (msg.value & 0x01);
 
         balances[bob] = balances[bob].add(bobValue);
         balances[carol] = balances[carol].add(carolValue);
 
-        emit LogSplit(alice, bob, carol, bobValue, carolValue);
+        emit LogSplit(msg.sender, bob, carol, bobValue, carolValue);
 
         return true;
     }
 
     function pull() public returns (bool success) {
-        uint balance = balances[msg.sender];
+        uint senderBalance = balances[msg.sender];
 
-        require(balance > 0);
-        assert(address(this).balance >= balance);
+        require(senderBalance > 0);
+        assert(address(this).balance >= senderBalance);
 
-        emit LogPull(msg.sender, balance);
+        emit LogPull(msg.sender, senderBalance);
 
         balances[msg.sender] = 0;
-        msg.sender.transfer(balance);
+        msg.sender.transfer(senderBalance);
 
         return true;
     }

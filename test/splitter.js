@@ -15,7 +15,7 @@ contract('Splitter', (accounts) => {
         bobAddress = accounts[1];
         carolAddress = accounts[2];
 
-        splitterInstance = await Splitter.new();
+        splitterInstance = await Splitter.new({from: accounts[0]});
     });
 
     it('should fail when triggering fallback function', async () => {
