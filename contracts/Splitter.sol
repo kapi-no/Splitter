@@ -1,6 +1,6 @@
 pragma solidity 0.5.7;
 
-import "./SafeMath.sol";
+import '../node_modules/openzeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract Splitter {
     using SafeMath for uint;
